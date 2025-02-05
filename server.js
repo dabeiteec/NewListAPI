@@ -1,7 +1,7 @@
 const express = require('express');
 const userRouter = require('./routes/user.router.js')
 const newsRouter = require('./routes/news.router.js')
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT;
 
 const app = express();
 app.use((req, res, next) => {
