@@ -1,7 +1,9 @@
 const bcrypt = require('bcrypt');
 const validator = require('./validate.utils');
+const { pool } = require('../db/initDb');
 // Проверка регистрации
-const registrationValidate = async (name, password, db) => {
+
+const registrationValidate = async (name, password) => {
     if (name.length < 3) {
         return { status: 400, message: 'Имя должно быть длиннее 3 символов.' };
     }
@@ -10,7 +12,7 @@ const registrationValidate = async (name, password, db) => {
         return { status: 400, message: 'Пароль должен быть длиннее 6 символов.' };
     }
 
-    const userExists = await validator.doesUserExist(name, db);
+    const userExists = await validator.doesUserExist(name, pool);
     if (userExists) {
         return { status: 400, message: 'Пользователь с таким именем уже существует!' };
     }
@@ -19,8 +21,8 @@ const registrationValidate = async (name, password, db) => {
 };
 
 // Проверка наличия пользователя
-const checkUser = async (name,password, db) => {
-    const user = await validator.getUserByName(name, db);
+const checkUser = async (name,password) => {
+    const user = await validator.getUserByName(name);
     if (!user) {
         return { status: 400, message: 'Пользователя с таким именем не существует' };
     }

@@ -1,7 +1,8 @@
+const { pool } = require('../db//initDb'); 
 
 // Получение пользователя из базы
-const getUserByName = async (name, db) => {
-    const result = await db.query(
+const getUserByName = async (name) => {
+    const result = await pool.query(
         'SELECT * FROM users WHERE name = $1',
         [name]
     );
@@ -9,8 +10,8 @@ const getUserByName = async (name, db) => {
 };
 
 // Проверка существования пользователя
-const doesUserExist = async (name, db) => {
-    const user = await getUserByName(name, db);
+const doesUserExist = async (name) => {
+    const user = await getUserByName(name);
     return !!user; // Возвращаем true, если пользователь существует, иначе false
 };
 

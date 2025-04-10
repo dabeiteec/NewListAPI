@@ -1,28 +1,6 @@
-const { UserServices,AdminServices } = require('../services/user.services');
+const { UserServices, AdminServices } = require('../services/user.services');
 
 class UserController {
-    async createUser(req, res) {
-        try {
-            const { name, password } = req.body;
-            const result = await UserServices.createUser(name, password);
-            res.status(201).json(result);
-        } catch (error) {
-            console.error('Ошибка в createUser:', error);
-            res.status(error.status || 500).json({ message: error.message || 'Ошибка сервера.' });
-        }
-    }
-
-    async createToken(req, res) {
-        try {
-            const { name, password } = req.body;
-            const result = await UserServices.createToken(name, password);
-            res.status(200).json(result);
-        } catch (error) {
-            console.error('Ошибка в createToken:', error);
-            res.status(error.status || 500).json({ message: error.message || 'Ошибка сервера.' });
-        }
-    }
-
     async getOneUser(req, res) {
         try {
             const { id } = req.params;
@@ -73,7 +51,21 @@ class AdminController {
 
     async setUserRole(req, res) {
         try {
-            await AdminServices.setUserRole(req, res);
+            const userId = req.params.id; 
+            const { role } = req.body; 
+
+            if (!userId || isNaN(userId)) {
+                return res.status(400).json({ message: 'Необходимо указать корректный userId.' });
+            }
+
+            const validRoles = ['admin', 'moderator', 'default_user'];
+            if (!validRoles.includes(role)) {
+                return res.status(400).json({ message: 'Недопустимая роль.' });
+            }
+
+            await AdminServices.setUserRole(userId, role); 
+
+            res.status(200).json({ message: 'Роль успешно обновлена.' });
         } catch (error) {
             console.error('Ошибка в setUserRole:', error);
             res.status(error.status || 500).json({ message: error.message || 'Ошибка сервера.' });
