@@ -30,7 +30,11 @@ class NewsUserController {
         try {
             const { name, description, image, themeIds } = req.body;
             const authorId = req.user.id;
-            const authorRole = req.user.role; 
+            const authorRole = req.user.role;
+
+            if (!name || !description || !themeIds?.length) {
+                throw {status:400,message: 'Заполните обязательные поля: name, description, themeIds' };
+            }
     
             const newNews = await NewsUserServices.createNews({
                 name, description, image, themeIds, authorId, authorRole
@@ -54,7 +58,7 @@ class NewsUserController {
             const { news_id, name, description, image, themeIds } = req.body;
     
             if (!news_id || !name || !description || !themeIds?.length) {
-                return res.status(400).json({ message: 'Заполните обязательные поля: news_id, name, description, themeIds' });
+                throw({ status:400,message: 'Заполните обязательные поля: news_id, name, description, themeIds' });
             }
     
             const updatedNews = await NewsUserServices.updateNews({
@@ -73,7 +77,7 @@ class NewsUserController {
         try {
             const  {id}  = req.params;
             if (!id) {
-                return res.status(400).json({ message: 'Не указан ID пользователя' });
+                throw ({status:400, message: 'Не указан ID пользователя' });
             }
             const userId = parseInt(id, 10);
             if (isNaN(userId)) {
@@ -126,9 +130,9 @@ class NewsAdminController {
             const {themeName} = req.body;
 
             if (!themeName) {
-                return res.status(400).json({ message: 'Имя темы не указано' });
+                throw ({ status:400, message:'Имя темы не указано'}) ;
             }
-
+            
             const newTheme = await NewsAdminServices.createTheme(themeName);
             res.json({message:'Тема успешно добавлена',newTheme});
         }catch(error){

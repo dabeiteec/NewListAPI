@@ -15,8 +15,8 @@ router.get('/news/:id',authMiddleware,roleMiddleware(['default_user','moderator'
 router.get('/moder',authMiddleware,roleMiddleware(['moderator','admin']),NewsModerController.getUnApprovedNews);
 router.put('/moder/:id',authMiddleware,roleMiddleware(['moderator','admin']),NewsModerController.setNewsStatus);
 
-router.post('/news/admin',authMiddleware,roleMiddleware(['admin']),NewsAdminController.createNewsTheme);
-router.delete('/news/admin/:id',authMiddleware,roleMiddleware(['admin']),NewsAdminController.deleteNewsTheme);
-router.delete('/news/:id',authMiddleware,roleMiddleware(['admin']),NewsAdminController.deleteNews);
+router.post('/admin',authMiddleware,roleMiddleware(['admin']),NewsAdminController.createNewsTheme);
+router.delete('/admin/:id',authMiddleware,roleMiddleware(['admin']),NewsAdminController.deleteNewsTheme);
+router.delete('/deleteAdmin/:id',authMiddleware,roleMiddleware(['admin']),NewsAdminController.deleteNews);
 
 module.exports = router;

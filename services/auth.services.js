@@ -1,17 +1,10 @@
 const { pool } = require('../db/initDb');
 const bcrypt = require('bcrypt');
-const { registrationValidate, checkUser } = require('../utils/password.utils');
 const { generateAccessToken } = require('../utils/jwt.utils');
 
 class AuthServices {
     async createUser(name, password) {
         try {
-            const validationError = await registrationValidate(name, password);
-
-            if (validationError) {
-                throw { status: validationError.status, message: validationError.message };
-            }
-
             const hashPassword = bcrypt.hashSync(password, 6);
             const newUser = await pool.query(
                 'INSERT INTO users(name, password) VALUES ($1, $2) RETURNING id',
@@ -30,11 +23,6 @@ class AuthServices {
 
     async createToken(name, password) {
         try {
-            const user = await checkUser(name, password);
-            if (user) {
-                throw { status: user.status, message: user.message };
-            }
-
             const result = await pool.query(
                 'SELECT id, role FROM users WHERE name = $1',
                 [name]
